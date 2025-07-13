@@ -36,20 +36,7 @@ const blessingMessages = [
     "🌌 Định mệnh an bài, thiên địa chứng giám! Nguyện hai vị đạo hữu tu luyện đại thành, nắm giữ chân lý, mãi mãi bên nhau! 🏆"
 ]
 
-const blessingGifts = {
-    "41911": [
-        { friend_id: "75139", cost_type: "tien_ngoc", max: 3 }
-    ],
-    "34918": [
-        { friend_id: "35951", cost_type: "tien_ngoc", max: 3 }
-    ],
-    "35951": [
-        { friend_id: "34918", cost_type: "tien_ngoc", max: 3 }
-    ],
-    "17231": [
-        { friend_id: "27841", cost_type: "tien_ngoc", max: 3 }
-    ],
-}
+const blessingGifts = {}
 
 const quizBank = {
     "Ai là huynh đệ và cũng là người thầy mà Vương Lâm trong Tiên Nghịch kính trọng nhất ?": "Tư Đồ Nam",
@@ -526,6 +513,7 @@ const loadPage = async (url, retries = 3, delay = 1250, timeout = 30000) => {
     } while (retries-- > 0)
     return { html: '', doc: null }
 }
+
 
 const LoggerMessageType = Object.freeze({
     SUCCESS: 'success',
@@ -2465,231 +2453,231 @@ class VongQuayPhucVan {
     }
 }
 
-class DuaTop {
-    constructor(user, page = null) {
-        this.user = user
-        this.page = page
-        this.cooldown = ((6 * 60 + 30) * 60) * 1000
-    }
+// class DuaTop {
+//     constructor(user, page = null) {
+//         this.user = user
+//         this.page = page
+//         this.cooldown = ((6 * 60 + 30) * 60) * 1000
+//     }
 
-    async trigger({ tab, retries = 5, delay = 10000, timeout = 15000 }) {
-        const bank = Object.fromEntries(Object.entries(quizBank).map(([key, value]) => [normalize(key), value]))
-        const remainingTime = (doc) => {
-            const text = doc.getElementById('countdown-timer')?.textContent?.trim() ?? ''
-            const [hh, mm, ss] = text.split(':').map(Number)
-            if ([hh, mm, ss].some(isNaN)) return 0
-            return (hh * 3600 + mm * 60 + ss) * 1000
-        }
-        const answerIndex = (value) => {
-            const question = normalize(value.question)
-            const answer = bank[question] ?? ''
-            const options = value.options.map(option => typeof option === 'string' ? option : option.content)
-            let bestIndex = bestMatch(options, answer).bestIndex
-            return bestIndex
-        }
-        const retry = async (reason = '') => {
-            if (reason) logger.log(`↪️ [Đua Top] - ${reason} ➤ Thử lại còn ${retries - 1} lần...`)
-            if (tab && !tab.closed) tab.location.replace('about:blank')
-            retries--
-            await sleep(delay)
-        }
+//     async trigger({ tab, retries = 5, delay = 10000, timeout = 15000 }) {
+//         const bank = Object.fromEntries(Object.entries(quizBank).map(([key, value]) => [normalize(key), value]))
+//         const remainingTime = (doc) => {
+//             const text = doc.getElementById('countdown-timer')?.textContent?.trim() ?? ''
+//             const [hh, mm, ss] = text.split(':').map(Number)
+//             if ([hh, mm, ss].some(isNaN)) return 0
+//             return (hh * 3600 + mm * 60 + ss) * 1000
+//         }
+//         const answerIndex = (value) => {
+//             const question = normalize(value.question)
+//             const answer = bank[question] ?? ''
+//             const options = value.options.map(option => typeof option === 'string' ? option : option.content)
+//             let bestIndex = bestMatch(options, answer).bestIndex
+//             return bestIndex
+//         }
+//         const retry = async (reason = '') => {
+//             if (reason) logger.log(`↪️ [Đua Top] - ${reason} ➤ Thử lại còn ${retries - 1} lần...`)
+//             if (tab && !tab.closed) tab.location.replace('about:blank')
+//             retries--
+//             await sleep(delay)
+//         }
 
-        while (retries > 0) {
-            const targetURLString = DOMAIN + '/dua-top-hh3d'
-            if (!tab || tab.closed) {
-                this.page = await loadPage(targetURLString)
-                const distance = remainingTime(this.page.doc)
-                if (distance > 0) return this.user.last_duatop = Date.now() + Math.max(0, distance) - this.cooldown
-                const nonce = Better_Messages?.nonce
-                const value = await this.getQuestion(nonce)
-                if (!value.id || !value.options.length) {
-                    await retry('Không tải được câu hỏi')
-                    continue
-                }
-                let quiz = this.user.quiz || (this.user.quiz = [])
-                quiz.push({ question: value.question, options: value.options })
-                const index = answerIndex(value)
-                if (index < 0) return logger.log('🔴 [Đua Top] - Không tìm thấy câu trả lời - Kiểm tra lại.')
-                const success = await this.submitAnswer(nonce, value.id, index)
-                if (success) {
-                    this.user.last_duatop = Date.now()
-                } else {
-                    this.user.last_duatop = Date.now() + 5 * 60 * 1000 - this.cooldown
-                }
-                return
-            }
-            tab.location.replace(targetURLString)
-            await sleep(250)
-            const navigated = await new Promise(resolve => {
-                const interval = setInterval(() => {
-                    if (tab.location.href === targetURLString) {
-                        clearInterval(interval)
-                        resolve(true)
-                    }
-                }, 500)
-                setTimeout(() => {
-                    clearInterval(interval)
-                    resolve(false)
-                }, timeout)
-            })
-            if (!navigated) {
-                await retry('Điều hướng thất bại.')
-                continue
-            }
-            try {
-                const loaded = await this.waitForPage(tab, timeout)
-                if (!loaded) {
-                    await retry('Không tải được trang đua top.')
-                    continue
-                }
-                const distance = remainingTime(tab.document)
-                if (distance > 0) {
-                    this.user.last_duatop = Date.now() + Math.max(0, distance) - this.cooldown
-                    return tab.location.replace('about:blank')
-                }
-                const openButton = tab.document.querySelector('.nhan-luot-container .mo-ruong-btn')
-                if (!openButton) {
-                    await retry('Không tìm thấy thấy nút Mở rương')
-                    continue
-                }
-                openButton.click()
-                const { question, optionButtons } = await this.waitForQuiz(tab, timeout)
-                if (!question || !optionButtons.length) {
-                    await retry('Không tải được câu hỏi')
-                    continue
-                }
-                const options = optionButtons.map(button => button.innerText.trim())
-                let quiz = this.user.quiz || (this.user.quiz = [])
-                quiz.push({ question: question, options: options })
-                const index = answerIndex({ question, options })
-                if (index < 0) return logger.log('🔴 [Đua Top] - Không tìm thấy câu trả lời - Kiểm tra lại.')
-                optionButtons[index].click()
-                const submitButton = tab.document.getElementById('submit-answer')
-                if (!submitButton) {
-                    console.warn('Không tìm thấy nút Trả lời')
-                    return false
-                }
-                submitButton.click()
-                this.user.index_duatop = index
-                const success = await this.waitForAnswer(tab, timeout)
-                if (success) {
-                    this.user.last_duatop = Date.now()
-                } else {
-                    this.user.last_duatop = Date.now() + 5 * 60 * 1000 - this.cooldown
-                }
-                return tab.location.replace('about:blank')
-            } catch (error) {
-                await retry(`Lỗi xử lý trang đua top: ${error.message || error}`)
-            }
-        }
-        this.user.last_duatop = Date.now() + 5 * 60 * 1000 - this.cooldown
-        logger.log('🔴 [Đua Top] - Mở rương thất bại sau nhiều lần.')
-    }
+//         while (retries > 0) {
+//             const targetURLString = DOMAIN + '/dua-top-hh3d'
+//             if (!tab || tab.closed) {
+//                 this.page = await loadPage(targetURLString)
+//                 const distance = remainingTime(this.page.doc)
+//                 if (distance > 0) return this.user.last_duatop = Date.now() + Math.max(0, distance) - this.cooldown
+//                 const nonce = Better_Messages?.nonce
+//                 const value = await this.getQuestion(nonce)
+//                 if (!value.id || !value.options.length) {
+//                     await retry('Không tải được câu hỏi')
+//                     continue
+//                 }
+//                 let quiz = this.user.quiz || (this.user.quiz = [])
+//                 quiz.push({ question: value.question, options: value.options })
+//                 const index = answerIndex(value)
+//                 if (index < 0) return logger.log('🔴 [Đua Top] - Không tìm thấy câu trả lời - Kiểm tra lại.')
+//                 const success = await this.submitAnswer(nonce, value.id, index)
+//                 if (success) {
+//                     this.user.last_duatop = Date.now()
+//                 } else {
+//                     this.user.last_duatop = Date.now() + 5 * 60 * 1000 - this.cooldown
+//                 }
+//                 return
+//             }
+//             tab.location.replace(targetURLString)
+//             await sleep(250)
+//             const navigated = await new Promise(resolve => {
+//                 const interval = setInterval(() => {
+//                     if (tab.location.href === targetURLString) {
+//                         clearInterval(interval)
+//                         resolve(true)
+//                     }
+//                 }, 500)
+//                 setTimeout(() => {
+//                     clearInterval(interval)
+//                     resolve(false)
+//                 }, timeout)
+//             })
+//             if (!navigated) {
+//                 await retry('Điều hướng thất bại.')
+//                 continue
+//             }
+//             try {
+//                 const loaded = await this.waitForPage(tab, timeout)
+//                 if (!loaded) {
+//                     await retry('Không tải được trang đua top.')
+//                     continue
+//                 }
+//                 const distance = remainingTime(tab.document)
+//                 if (distance > 0) {
+//                     this.user.last_duatop = Date.now() + Math.max(0, distance) - this.cooldown
+//                     return tab.location.replace('about:blank')
+//                 }
+//                 const openButton = tab.document.querySelector('.nhan-luot-container .mo-ruong-btn')
+//                 if (!openButton) {
+//                     await retry('Không tìm thấy thấy nút Mở rương')
+//                     continue
+//                 }
+//                 openButton.click()
+//                 const { question, optionButtons } = await this.waitForQuiz(tab, timeout)
+//                 if (!question || !optionButtons.length) {
+//                     await retry('Không tải được câu hỏi')
+//                     continue
+//                 }
+//                 const options = optionButtons.map(button => button.innerText.trim())
+//                 let quiz = this.user.quiz || (this.user.quiz = [])
+//                 quiz.push({ question: question, options: options })
+//                 const index = answerIndex({ question, options })
+//                 if (index < 0) return logger.log('🔴 [Đua Top] - Không tìm thấy câu trả lời - Kiểm tra lại.')
+//                 optionButtons[index].click()
+//                 const submitButton = tab.document.getElementById('submit-answer')
+//                 if (!submitButton) {
+//                     console.warn('Không tìm thấy nút Trả lời')
+//                     return false
+//                 }
+//                 submitButton.click()
+//                 this.user.index_duatop = index
+//                 const success = await this.waitForAnswer(tab, timeout)
+//                 if (success) {
+//                     this.user.last_duatop = Date.now()
+//                 } else {
+//                     this.user.last_duatop = Date.now() + 5 * 60 * 1000 - this.cooldown
+//                 }
+//                 return tab.location.replace('about:blank')
+//             } catch (error) {
+//                 await retry(`Lỗi xử lý trang đua top: ${error.message || error}`)
+//             }
+//         }
+//         this.user.last_duatop = Date.now() + 5 * 60 * 1000 - this.cooldown
+//         logger.log('🔴 [Đua Top] - Mở rương thất bại sau nhiều lần.')
+//     }
 
-    async waitForPage(tab, timeout = 15000) {
-        return new Promise(resolve => {
-            const interval = setInterval(() => {
-                try {
-                    if (tab.document && tab.document.readyState === 'complete') {
-                        clearInterval(interval)
-                        resolve(true)
-                    }
-                } catch (error) {
-                    logger.log(`🔴 [Đua Top] - Lỗi truy cập trang đua top`)
-                    clearInterval(interval)
-                    resolve(false)
-                }
-            }, 500)
-            setTimeout(() => {
-                clearInterval(interval)
-                resolve(false)
-            }, timeout)
-        })
-    }
+//     async waitForPage(tab, timeout = 15000) {
+//         return new Promise(resolve => {
+//             const interval = setInterval(() => {
+//                 try {
+//                     if (tab.document && tab.document.readyState === 'complete') {
+//                         clearInterval(interval)
+//                         resolve(true)
+//                     }
+//                 } catch (error) {
+//                     logger.log(`🔴 [Đua Top] - Lỗi truy cập trang đua top`)
+//                     clearInterval(interval)
+//                     resolve(false)
+//                 }
+//             }, 500)
+//             setTimeout(() => {
+//                 clearInterval(interval)
+//                 resolve(false)
+//             }, timeout)
+//         })
+//     }
 
-    waitForQuiz(tab, timeout = 15000) {
-        return new Promise(resolve => {
-            const modalElement = tab.document.getElementById('quiz-modal')
-            const questionElement = tab.document.getElementById('quiz-question')
-            const optionsElement = tab.document.getElementById('quiz-options')
-            if (!modalElement || !questionElement || !optionsElement) return resolve({ question: '', optionButtons: [] })
-            const visible = modalElement.style.display === 'block'
-            const question = questionElement.innerText?.trim()
-            const optionButtons = Array.from(optionsElement.children || [])
-            if (visible && question && optionButtons.length) {
-                return resolve({ question, optionButtons })
-            }
+//     waitForQuiz(tab, timeout = 15000) {
+//         return new Promise(resolve => {
+//             const modalElement = tab.document.getElementById('quiz-modal')
+//             const questionElement = tab.document.getElementById('quiz-question')
+//             const optionsElement = tab.document.getElementById('quiz-options')
+//             if (!modalElement || !questionElement || !optionsElement) return resolve({ question: '', optionButtons: [] })
+//             const visible = modalElement.style.display === 'block'
+//             const question = questionElement.innerText?.trim()
+//             const optionButtons = Array.from(optionsElement.children || [])
+//             if (visible && question && optionButtons.length) {
+//                 return resolve({ question, optionButtons })
+//             }
 
-            const observer = new MutationObserver(() => {
-                const visible = modalElement.style.display === 'block'
-                const question = questionElement.innerText?.trim()
-                const optionButtons = Array.from(optionsElement.children || [])
-                if (visible && question && optionButtons.length) {
-                    observer.disconnect()
-                    clearTimeout(timer)
-                    resolve({ question, optionButtons })
-                }
-            })
-            observer.observe(modalElement, { attributes: true, childList: true, subtree: true, characterData: true, attributeFilter: ['style'] })
-            const timer = setTimeout(() => {
-                observer.disconnect()
-                resolve({ question: '', optionButtons: [] })
-            }, timeout)
-        })
-    }
+//             const observer = new MutationObserver(() => {
+//                 const visible = modalElement.style.display === 'block'
+//                 const question = questionElement.innerText?.trim()
+//                 const optionButtons = Array.from(optionsElement.children || [])
+//                 if (visible && question && optionButtons.length) {
+//                     observer.disconnect()
+//                     clearTimeout(timer)
+//                     resolve({ question, optionButtons })
+//                 }
+//             })
+//             observer.observe(modalElement, { attributes: true, childList: true, subtree: true, characterData: true, attributeFilter: ['style'] })
+//             const timer = setTimeout(() => {
+//                 observer.disconnect()
+//                 resolve({ question: '', optionButtons: [] })
+//             }, timeout)
+//         })
+//     }
 
-    waitForAnswer(tab, timeout = 10000) {
-        return new Promise(resolve => {
-            const container = tab.document.querySelector('#quiz-options')
-            if (!container) return resolve(false)
-            const observer = new MutationObserver(() => {
-                const correct = container.querySelector('.correct-answer')
-                if (correct) {
-                    observer.disconnect()
-                    clearTimeout(timer)
-                    const wrong = container.querySelector('.wrong-answer')
-                    resolve(!wrong)
-                }
-            })
-            observer.observe(container, { subtree: true, attributes: true, attributeFilter: ['class'] })
-            const timer = setTimeout(() => {
-                observer.disconnect()
-                resolve(false)
-            }, timeout)
-        })
-    }
+//     waitForAnswer(tab, timeout = 10000) {
+//         return new Promise(resolve => {
+//             const container = tab.document.querySelector('#quiz-options')
+//             if (!container) return resolve(false)
+//             const observer = new MutationObserver(() => {
+//                 const correct = container.querySelector('.correct-answer')
+//                 if (correct) {
+//                     observer.disconnect()
+//                     clearTimeout(timer)
+//                     const wrong = container.querySelector('.wrong-answer')
+//                     resolve(!wrong)
+//                 }
+//             })
+//             observer.observe(container, { subtree: true, attributes: true, attributeFilter: ['class'] })
+//             const timer = setTimeout(() => {
+//                 observer.disconnect()
+//                 resolve(false)
+//             }, timeout)
+//         })
+//     }
 
-    async getQuestion(nonce) {
-        if (!nonce) return logger.log(`🔴 [Đua Top] - Không tìm thấy nonce hh3d_get_question.`)
-        const result = await postRequest(ACTION_URL, {
-            headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': nonce },
-            body: JSON.stringify({ action: 'hh3d_get_question' })
-        })
-        if (result?.id && Array.isArray(result.options) && result.options.length) {
-            return { id: result.id, question: result.question, options: result.options }
-        }
-        logger.log('🔴 [Đua Top] - Không lấy được dữ liệu hh3d_get_question.')
-        return { id: null, question: null, options: [] }
-    }
+//     async getQuestion(nonce) {
+//         if (!nonce) return logger.log(`🔴 [Đua Top] - Không tìm thấy nonce hh3d_get_question.`)
+//         const result = await postRequest(ACTION_URL, {
+//             headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': nonce },
+//             body: JSON.stringify({ action: 'hh3d_get_question' })
+//         })
+//         if (result?.id && Array.isArray(result.options) && result.options.length) {
+//             return { id: result.id, question: result.question, options: result.options }
+//         }
+//         logger.log('🔴 [Đua Top] - Không lấy được dữ liệu hh3d_get_question.')
+//         return { id: null, question: null, options: [] }
+//     }
 
-    async submitAnswer(nonce, question_id, selected_answer) {
-        if (!nonce) {
-            logger.log(`🔴 [Đua Top] - Không tìm thấy nonce hh3d_submit_answer.`)
-            return false
-        }
-        const result = await postRequest(ACTION_URL, {
-            headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': nonce },
-            body: JSON.stringify({ action: 'hh3d_submit_answer', question_id, selected_answer })
-        })
-        if (result?.success === true) {
-            logger.log(`🟢 [Đua Top] - Mở rương thành công - Nhận được ${result.points} Tu Vi.`)
-            return true
-        } else {
-            logger.log(`🔴 [Đua Top] - Mở rương thất bại`, result?.message || result)
-            return false
-        }
-    }
-}
+//     async submitAnswer(nonce, question_id, selected_answer) {
+//         if (!nonce) {
+//             logger.log(`🔴 [Đua Top] - Không tìm thấy nonce hh3d_submit_answer.`)
+//             return false
+//         }
+//         const result = await postRequest(ACTION_URL, {
+//             headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': nonce },
+//             body: JSON.stringify({ action: 'hh3d_submit_answer', question_id, selected_answer })
+//         })
+//         if (result?.success === true) {
+//             logger.log(`🟢 [Đua Top] - Mở rương thành công - Nhận được ${result.points} Tu Vi.`)
+//             return true
+//         } else {
+//             logger.log(`🔴 [Đua Top] - Mở rương thất bại`, result?.message || result)
+//             return false
+//         }
+//     }
+// }
 
 class TaskRunnerUI {
     constructor() {
@@ -2746,7 +2734,7 @@ class TaskRunnerUI {
         Object.assign(trigger.style, {
             position: 'fixed',
             top: '15px',
-            right: '16px',
+            left: '16px',
             width: '44px',
             height: '44px',
             backgroundColor: 'rgba(28, 32, 46, 0.9)',
@@ -2947,7 +2935,7 @@ Object.assign(header.style, {
         const taskMap = {
             'Full Action': () => {
                 logger.log('▶️ Full Action');
-                manager.trigger({ tasks: [Task.DIEM_DANH, Task.VAN_DAP, Task.TE_LE, Task.VONG_QUAY_PHUC_VAN, Task.DO_THACH, Task.THI_LUYEN_TONG_MON, Task.PHUC_LOI_DUONG, Task.HOANG_VUC, Task.LUAN_VO, Task.BAN_PHUC, Task.BI_CANH, Task.DUA_TOP], tab: null });
+                manager.trigger({ tasks: [Task.DIEM_DANH, Task.VAN_DAP, Task.TE_LE, Task.hienTe], bets, blessings, codes, battles });
              },
             // 'N.Vụ Ngày': () => { // Task 1, 6
             //     logger.log('▶️ Kích hoạt [Nhiệm Vụ Ngày]');
@@ -2957,14 +2945,14 @@ Object.assign(header.style, {
             //     taskQueue.enqueue(() => tongmon.triggerTeLe());
             //     taskQueue.enqueue(() => tongmon.triggerBiCanh());
             // },
-             'Đua Top': () => { 
-                 logger.log('▶️ Kích hoạt [Đua Top]');
-                 let tab   = window.open('about:blank', '_blank');
-                    manager.trigger({ tasks: [Task.DUA_TOP], tab });
-             },
-            // 'TLTM': () => { // Task 3
-            //     logger.log('▶️ Kích hoạt [Thí Luyện Tông Môn]');
-            //     taskQueue.enqueue(() => new ThiLuyenTongMon().trigger());
+            //  'Đua Top': () => { 
+            //      logger.log('▶️ Kích hoạt [Đua Top]');
+            //      let tab   = window.open('about:blank', '_blank');
+            //         manager.trigger({ tasks: [Task.DUA_TOP], tab });
+            //  },
+            // 'Hiến Tế': () => { 
+            //     logger.log('▶️ Kích hoạt [Hiến Tế]');
+            //     taskQueue.enqueue(() => new hienTe().trigger());
             // },
             // 'Phúc Lợi': () => { // Task 4
             //     logger.log('▶️ Kích hoạt [Phúc Lợi]');
@@ -3029,8 +3017,8 @@ const TaskGroups = {
     "4": ['PHUC_LOI_DUONG'],
     "5": ['HOANG_VUC'],
     "10": ['LUAN_VO'],
-    "26": ['DUA_TOP'],
-    "50": ['BAN_PHUC']
+    // "26": ['DUA_TOP'],
+    // "50": ['BAN_PHUC']
 }
 Object.freeze(TaskGroups)
 const Task = {}
@@ -3242,7 +3230,7 @@ class TaskManager {
                 case Task.THI_LUYEN_TONG_MON:
                     this.repeat({
                         task: task,
-                        interval: () => 60 * 60 * 1000,
+                        interval: () => 30 * 60 * 1000,
                         condition: () => user.thiluyen < 3,
                         handler: async () => {
                             await new ThiLuyenTongMon(user).trigger()
@@ -3253,7 +3241,7 @@ class TaskManager {
                 case Task.PHUC_LOI_DUONG:
                     this.repeat({
                         task: task,
-                        interval: () => 60 * 60 * 1000,
+                        interval: () => 30 * 60 * 1000,
                         condition: () => user.phucloi < 4,
                         handler: async () => {
                             await new PhucLoiDuong(user).trigger()
@@ -3325,7 +3313,7 @@ const manager = new TaskManager()
 // 10 - Luận Võ - Gửi Khiêu Chiến
 // 26 - Đua Top
 // 50 - Ban Phúc
-const tasks = [-1, 0, 1, 2, 3, 4, 5, 10]
+const tasks = [-1, 0, 1, 2, 3, 4, 5]
 
 // Tuỳ chỉnh trong Tiên Duyên
 // `lixi` - Nhận Lì Xì (nếu có) (true hoặc false).
@@ -3346,13 +3334,13 @@ const bets = [1, 2]
 // ➤ online: false = Không tự động tìm đánh người Online khi lượt gửi người Theo dõi chưa đạt tối đa.
 // ➤ online: true = Tự động tìm đánh người Online khi lượt gửi người Theo dõi chưa đạt tối đa.
 // ➤ retries: 3 = Số lần tải lại danh sách người Online.
-const battles = { autoOn: true, options: { online: true, retries: 3 } }
+const battles = { autoOn: false, options: { online: false, retries: 3 } }
 
 // Danh sách code cần nhập trong Linh Thạch (text).
 // ➤ Ví dụ: codes = ["NOTHINGIMPOSSIBLE", "KETTHUCBANPHUC3006"] hoặc codes = ['NOTHINGIMPOSSIBLE', 'KETTHUCBANPHUC3006']
 const codes = ['NOTHINGIMPOSSIBLE']
 
-async function trigger({ codes, tasks, blessings, bets, battles, tab = null }) {
+async function trigger({ codes, tasks, blessings, bets, battles}) {
     let userData = await storage.getUserData()
     const { user_id } = Better_Messages || {}
     if (!user_id) return logger.log(`🔴 [HoatHinh3D] - Không tìm thấy user_id.`)
@@ -3364,7 +3352,7 @@ async function trigger({ codes, tasks, blessings, bets, battles, tab = null }) {
     const luanvo = new LuanVo(user)
     const vongquay = new VongQuayPhucVan(user)
 
-    if (blessings.gift) await tienduyen.triggerGift()
+    // if (blessings.gift) await tienduyen.triggerGift()
     if (codes.length) await new LinhThach(codes).trigger()
     if (tasks.includes(-1)) await tongmon.triggerBiCanh()
     if (tasks.includes(0)) await tienduyen.scanBlessing(null, blessings.lixi)
@@ -3382,7 +3370,7 @@ async function trigger({ codes, tasks, blessings, bets, battles, tab = null }) {
         await luanvo.triggerReceive(battles.autoOn)
         await luanvo.triggerSend(battles.options)
     }
-    if (tasks.includes(26)) await new DuaTop(user).trigger({ tab })
+    // if (tasks.includes(26)) await new DuaTop(user).trigger({ tab })
     if (tasks.includes(50)) await new BanPhuc().trigger()
     await luanvo.triggerReceive(battles.autoOn)
     await new HoatDongNgay(user).triggerReward()
@@ -3391,7 +3379,7 @@ async function trigger({ codes, tasks, blessings, bets, battles, tab = null }) {
     storage.setUserData(userData)
     logger.log('🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀')
 }
-let tab =window.open('about:blank', '_blank')
-manager.trigger({ codes, tasks, blessings, bets, battles, tab })
-manager.trigger({ tasks: [Task.DUA_TOP], tab })
+// let tab =window.open('about:blank', '_blank')
+manager.trigger({ codes, tasks, blessings, bets, battles})
+// manager.trigger({ tasks: [Task.DUA_TOP], tab })
 new TaskRunnerUI();
