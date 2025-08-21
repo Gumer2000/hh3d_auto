@@ -3563,7 +3563,7 @@ const manager = new TaskManager()
 // 10 - Luận Võ - Gửi Khiêu Chiến
 // 26 - Đua Top
 // 50 - Ban Phúc
-const tasks = [-1]
+const tasks = [-1, 0, 1, 2, 3, 4, 5, 10]
 
 // Tuỳ chỉnh trong Tiên Duyên
 // `lixi` - Nhận Lì Xì (nếu có) (true hoặc false).
