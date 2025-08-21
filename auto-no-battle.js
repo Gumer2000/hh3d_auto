@@ -36,7 +36,94 @@ const blessingMessages = [
     "🌌 Định mệnh an bài, thiên địa chứng giám! Nguyện hai vị đạo hữu tu luyện đại thành, nắm giữ chân lý, mãi mãi bên nhau! 🏆"
 ]
 
-const blessingGifts = {}
+const blessingGifts = {
+    // "ID người gửi": [
+    //     { friend_id: "ID người nhận", cost_type: "tien_ngoc hoặc xu", max: 3 },
+    "25623": [
+        { friend_id: "30833", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "27677", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "74039", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "84629", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "13341", cost_type: "tien_ngoc", max: 3 } 
+    ],
+    "58779": [
+        { friend_id: "42685", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "31398", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "9285", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "27677", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "74039", cost_type: "tien_ngoc", max: 3 }
+    ],
+    "42685": [
+        { friend_id: "58779", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "51269", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "49213", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "69959", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "27677", cost_type: "tien_ngoc", max: 3 }
+    ], 
+    "28446": [
+        { friend_id: "45315", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "97859", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "36199", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "30431", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "8111", cost_type: "tien_ngoc", max: 3 }
+    ],
+    "45315": [
+        { friend_id: "28446", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "15618", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "24649", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "12767", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "74039", cost_type: "tien_ngoc", max: 3 }
+    ], 
+    "42362": [
+        { friend_id: "1", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "43936", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "58714", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "58779", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "74039", cost_type: "tien_ngoc", max: 3 }
+    ],  
+    "82684": [
+        { friend_id: "76165", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "38702", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "98562", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "84629", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "84632", cost_type: "tien_ngoc", max: 3 }
+    ],    
+    "84632": [
+        { friend_id: "82684", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "29839", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "25623", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "27677", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "26577", cost_type: "tien_ngoc", max: 3 }
+    ],     
+    "84329": [
+        { friend_id: "59007", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "82684", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "25623", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "35811", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "29839", cost_type: "tien_ngoc", max: 3 }
+    ],      
+    "19024": [
+        { friend_id: "16066", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "18505", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "30431", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "25394", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "29606", cost_type: "tien_ngoc", max: 3 }
+    ],    
+    "59007": [
+        { friend_id: "56110", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "45315", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "84629", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "145285", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "84787", cost_type: "tien_ngoc", max: 3 }
+    ],    
+    "145285": [
+        { friend_id: "127286", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "19024", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "59007", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "34690", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "92722", cost_type: "tien_ngoc", max: 3 }
+    ],                           
+}
 
 const quizBank = {
     "Ai là huynh đệ và cũng là người thầy mà Vương Lâm trong Tiên Nghịch kính trọng nhất ?": "Tư Đồ Nam",
@@ -1084,6 +1171,7 @@ class LuanVo {
                 await this.rejectAllReceivedChallenges()
             }
             if (this.battleData.isAutoOn !== isOn) {
+               // await this.toggleAutoAccept(isOn) xóa // khi bật battle
             } else {
                 logger.log(`🟢 [Luận Võ] - Đang ${isOn ? 'bật' : 'tắt'} tự động khiêu chiến.`)
             }
@@ -1915,7 +2003,7 @@ class TienDuyen {
             }
             const friends = await this.getFriends(nonce)
             for (const { friend_id, cost_type, max } of targets) {
-                if (cost_type == 'tien_ngoc' && this.tienngoc < 1000) continue
+                if (cost_type == 'tien_ngoc' && this.tienngoc < 2000) continue
                 const friend = friends.find(friend => friend.user_id === friend_id)
                 if (!friend) continue
                 const remaining = Math.max(0, await this.checkGift(nonce, user_id, friend_id, cost_type))
@@ -3300,6 +3388,7 @@ class TaskManager {
 
         await viphh3d.trigger()
         if (blessings.gift) {
+            this.enqueue(() => tienduyen.triggerGift())
             this.enqueue(() => tienduyen.triggerWish())
         }
         if (codes.length) this.enqueue(() => new LinhThach(codes).trigger())
@@ -3474,7 +3563,7 @@ const manager = new TaskManager()
 // 10 - Luận Võ - Gửi Khiêu Chiến
 // 26 - Đua Top
 // 50 - Ban Phúc
-const tasks = [-1, 0, 1, 2, 3, 4, 5]
+const tasks = [-1]
 
 // Tuỳ chỉnh trong Tiên Duyên
 // `lixi` - Nhận Lì Xì (nếu có) (true hoặc false).
@@ -3499,7 +3588,7 @@ const battles = { autoOn: false, options: { online: true, retries: 3 } }
 
 // Danh sách code cần nhập trong Linh Thạch (text).
 // ➤ Ví dụ: codes = ["NOTHINGIMPOSSIBLE", "KETTHUCDUATOP"] hoặc codes = ['NOTHINGIMPOSSIBLE', 'KETTHUCDUATOP']
-const codes = ['CAPNHATPB', 'BAOTRI0508']
+const codes = ['DOTHACH']
 
 async function trigger({ codes, tasks, blessings, bets, battles, tab = null }) {
     let userData = await storage.getUserData()
