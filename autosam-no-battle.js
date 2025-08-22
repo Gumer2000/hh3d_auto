@@ -95,7 +95,7 @@ const blessingGifts = {
         { friend_id: "27677", cost_type: "tien_ngoc", max: 3 },
         { friend_id: "26577", cost_type: "tien_ngoc", max: 3 }
     ],     
-    "84329": [
+    "84629": [
         { friend_id: "59007", cost_type: "tien_ngoc", max: 3 },
         { friend_id: "82684", cost_type: "tien_ngoc", max: 3 },
         { friend_id: "25623", cost_type: "tien_ngoc", max: 3 },
@@ -117,11 +117,7 @@ const blessingGifts = {
         { friend_id: "84787", cost_type: "tien_ngoc", max: 3 }
     ],    
     "145285": [
-        { friend_id: "127286", cost_type: "tien_ngoc", max: 3 },
-        { friend_id: "19024", cost_type: "tien_ngoc", max: 3 },
-        { friend_id: "59007", cost_type: "tien_ngoc", max: 3 },
-        { friend_id: "34690", cost_type: "tien_ngoc", max: 3 },
-        { friend_id: "92722", cost_type: "tien_ngoc", max: 3 }
+        { friend_id: "127286", cost_type: "tien_ngoc", max: 3 }
     ],                           
 }
 
