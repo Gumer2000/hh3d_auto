@@ -2224,7 +2224,7 @@ class TienDuyen {
         const friends = (Array.isArray(result) ? result : [])
             .filter(friend => {
                 const time = new Date(friend.time)
-                return ((now - time) / 86400000) >= 7
+                return ((now - time) / 86400000) >= 3
             })
         return friends
     }
