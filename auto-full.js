@@ -117,7 +117,7 @@ const blessingGifts = {
         { friend_id: "84787", cost_type: "tien_ngoc", max: 3 }
     ],    
     "145285": [
-        { friend_id: "127286", cost_type: "tien_ngoc", max: 3 }
+        { friend_id: "127286", cost_type: "tien_ngoc", max: 3 },
     ],                           
 }
 
