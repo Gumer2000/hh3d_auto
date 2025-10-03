@@ -120,7 +120,28 @@ const blessingGifts = {
         { friend_id: "59007", cost_type: "tien_ngoc", max: 3 },
         { friend_id: "34690", cost_type: "tien_ngoc", max: 3 },
         { friend_id: "92722", cost_type: "tien_ngoc", max: 3 }
-    ],                           
+    ],  
+    "28402": [
+        { friend_id: "35811", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "9285", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "31981", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "50262", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "31398", cost_type: "tien_ngoc", max: 3 }
+    ],   
+    "26094": [
+        { friend_id: "31398", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "28402", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "9285", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "50262", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "35811", cost_type: "tien_ngoc", max: 3 }
+    ],       
+    "35811": [
+        { friend_id: "27677", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "28402", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "31157", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "74039", cost_type: "tien_ngoc", max: 3 },
+        { friend_id: "52491", cost_type: "tien_ngoc", max: 3 }
+    ],                                
 }
 
 const bossSkipChangeIds = ["65075", "41911", "25967", "50023", "38803", "17231", "35951", "34918", "25903", "18530", "32606", "68556", "84787", "85939"]
